@@ -4,12 +4,24 @@ import pickle
 
 
 class Vocabulary:
+    """
+    Create a vocabulary of a training dataset.
+    Args:
+        text: Input text.
+        If str is given, tokenization is done by RegexpTokenizer('\w+').
+
+    Attributes:
+        tokens: A set of all tokens present in the dataset
+        w2idx (dict): A dictionary matching tokens to their ids
+        idx2w (dict): A reversed dictionary matching ids to tokens
+
+    """
     def __init__(self, text):
         if isinstance(text, str):
             from nltk.tokenize import RegexpTokenizer
             tokenizer = RegexpTokenizer('\w+')
             self.tokens = set(tokenizer.tokenize(text.lower()))
-            warnings.warn("No words are filtered. RegexpTokenizer is used for tokenization. Punctuation is ignored")
+
         elif isinstance(text, list):
             self.tokens = set(itertools.chain.from_iterable(text))
         elif isinstance(text, set):
@@ -28,6 +40,14 @@ class Vocabulary:
         assert len(self.w2idx) == len(self.idx2w)
 
     def add_token(self, token):
+        """
+
+        Args:
+            token: a token to be added
+
+        Returns: updated vocabulary
+
+        """
         if token in self.w2idx.keys():
             print('Token "{}" is already present in the vocabulary'.format(token))
             return self
@@ -39,6 +59,11 @@ class Vocabulary:
         return self
 
     def get_length(self):
+        """
+        Get the current vocabulary size.
+        Returns (int): Vocabulary size
+
+        """
         return len(self.w2idx)
 
     def save(self, loc):
@@ -51,5 +76,5 @@ if __name__ == "__main__":
     with open("data/train.txt") as f:
         notes = f.read()
     voc = Vocabulary(notes)
-    print(voc.get_length())
-    print(voc.w2idx)
+    print("The size of the vocabulary is: {}".format(voc.get_length()))
+    print(voc.tokens)
