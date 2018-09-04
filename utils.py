@@ -6,6 +6,7 @@ from torch.autograd import Variable
 from tqdm import tqdm
 
 
+# Torch model helpers
 def get_sequences_lengths(sequences, pad_idx=0, dim=1):
     """
     Helper function for torch.pack_padded_sequence
@@ -27,7 +28,7 @@ def get_sequences_lengths(sequences, pad_idx=0, dim=1):
 
 def save_weights(model, filename):
     """
-    Saves trained model weights to a specified location
+    Save trained model weights to a specified location
     Args:
         model: nn.Module to be saved
         filename (str): location where to save
@@ -59,7 +60,7 @@ def cuda(obj):
 
 def variable(obj):
     """
-    Takes a tensor or an iterable and converts every item to .cuda() object if CUDA is available.
+    Take a tensor or an iterable and converts every item to .cuda() object if CUDA is available.
     Wraps tensors into Variable.
     Args:
         obj: object to be transferred to CUDA
@@ -79,7 +80,7 @@ def variable(obj):
 # Text processing functions
 def text2idx(words, w2idx):
     """
-    Converts a string or an iterable of tokens into token ids according to the vocabulary.
+    Convert a string or an iterable of tokens into token ids according to the vocabulary.
     Args:
         words (str or iterable): Input string or an iterable of tokens.
         If a string is used, the default tokenizer is RegexpTokenizer('w+')
@@ -104,7 +105,7 @@ def text2idx(words, w2idx):
 
 def idx2text(token_ids, idx2w):
     """
-    Converts a list of token ids into a text string.
+    Convert a list of token ids into a text string.
     Args:
         token_ids (list): Input list of token ids
         idx2w (dict): A reversed dictionary matching indices to tokens
@@ -123,7 +124,7 @@ def idx2text(token_ids, idx2w):
 
 def encode_sentence(sentence, w2idx, max_len, pad_token='<pad>', end_token='<end>'):
     """
-    Processes the sequence of ids by padding it to a specified length and adding an ending token
+    Process the sequence of ids by padding it to a specified length and adding an ending token
     Args:
         sentence (list): A list of tokens
         w2idx (dict): A dictionary matching words to their ids
@@ -143,7 +144,18 @@ def encode_sentence(sentence, w2idx, max_len, pad_token='<pad>', end_token='<end
     return enc_sentence
 
 
-def match_embeddings(idx2w, w2vec, dim):
+def match_embeddings(idx2w, w2vec, embedding_dim):
+    """
+    Sort pre-trained word embeddings corresponding to word ids in the vocabulary.
+    For words not present among pre-trained ones a vector of random numbers is used.
+    Args:
+        idx2w (dict): A reversed dictionary matching indices to tokens
+        w2vec (dict): Pre-trained embeddings with keys being words and values being vectors
+        embedding_dim: Pre-trained embeddings dimension
+
+    Returns (numpy array): Stacked numpy matrix of pre-trained word vectors
+
+    """
     embeddings = []
     oov = 0
     voc_size = len(idx2w)
@@ -152,9 +164,9 @@ def match_embeddings(idx2w, w2vec, dim):
         if word not in w2vec:
             oov += 1
             print('OOV: "{}"'.format(word))
-            embeddings.append(np.random.uniform(low=-1.0, high=1.0, size=(dim, )))
+            embeddings.append(np.random.uniform(low=-1.0, high=1.0, size=(embedding_dim, )))
         else:
             embeddings.append(w2vec[word])
-    print('{} words are out of pretrained vectors voc'.format(oov))
+    print('{} words are out of pre-trained vectors vocabulary'.format(oov))
     embeddings = np.stack(embeddings)
     return embeddings
