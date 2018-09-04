@@ -59,7 +59,7 @@ def main():
 
     # MODEL #
     model = cuda(nn.DataParallel(Autoencoder(hidden_size, voc_size, padding_idx, init_idx, max_len, embeddings)))
-    model_loc = "saved_models/autoencoder.pt"
+    model_loc = "saved_models/autoencoder_trained.pt"
 
     # MODEL PARAMS #
     optimizer = optim.Adam([parameter for parameter in list(model.parameters()) if parameter.requires_grad], lr)
