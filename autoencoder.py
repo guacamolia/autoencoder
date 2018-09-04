@@ -8,13 +8,13 @@ from utils import cuda, get_sequences_lengths, variable
 class Autoencoder(nn.Module):
     """
     Args:
-        hidden_size (): sdfsd
-        voc_size ():
-        padding_idx ():
-        init_idx ():
-        max_len ():
-
-    Attributes:
+        hidden_size (int): Hidden size of LSTM
+        voc_size (int): Vocabulary size
+        padding_idx (int): Index of a padding token in the vocabulary
+        init_idx (int): Index of a start-of-sentence token in the vocabulary
+        max_len (int): Maximum length of the sentence
+        embeddings (torch.FloatTensor, optional): Tensor of pre-trained word embeddings
+        embedding_dim (int, optional): Dimension of a trained embedding layer if pre-trained embeddings are not provided
     """
     def __init__(self, hidden_size, voc_size, padding_idx, init_idx, max_len, embeddings=None, embedding_dim=300):
         super().__init__()
