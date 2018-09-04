@@ -5,6 +5,19 @@ from vocabulary import Vocabulary
 
 
 class AutoencoderDataset(Dataset):
+    """
+    Args:
+        filename (str): .txt file containing training examples on separate lines
+        voc (obj, optional): Vocabulary object that has w2idx and idx2w attributes
+        max_len (int, optional): Maximum sentence length (a sentence is cropped if its size exceeds max_len).
+        If no value provided, the maximum sentence length in the dataset is used.
+
+    Attributes:
+        w2idx (dict): A dictionary matching tokens to their ids
+        idx2w (dict): A reversed dictionary matching ids to tokens
+        data (list): List of input lines
+
+    """
     def __init__(self, filename, voc=None, max_len=None):
         super(AutoencoderDataset, self).__init__()
 
@@ -36,5 +49,5 @@ class AutoencoderDataset(Dataset):
 
     def __getitem__(self, idx):
         sentence = self.data[idx]
-        ehr = encode_sentence(sentence, self.w2idx, self.max_len)
-        return ehr
+        enc_sentence = encode_sentence(sentence, self.w2idx, self.max_len)
+        return enc_sentence
